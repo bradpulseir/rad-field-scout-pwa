@@ -72,7 +72,7 @@ export default function SubmitLead() {
       // 1. Upload Photo
       const fileExt = photo.name.split('.').pop();
       const fileName = `${user.id}-${Date.now()}.${fileExt}`;
-      const { error: uploadError, data: uploadData } = await supabase.storage
+      const { error: uploadError } = await supabase.storage
         .from('leads')
         .upload(fileName, photo);
 
@@ -104,9 +104,10 @@ export default function SubmitLead() {
       // Redirect back to dashboard
       router.push("/dashboard");
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Submission error:", error);
-      alert(error.message || "Failed to submit lead.");
+      const errorMessage = error instanceof Error ? error.message : "Failed to submit lead.";
+      alert(errorMessage);
       setLoading(false);
     }
   };

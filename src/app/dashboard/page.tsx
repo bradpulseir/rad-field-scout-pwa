@@ -5,11 +5,25 @@ import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Camera, MapPin, Award, ChevronRight } from "lucide-react";
+import { User } from "@supabase/supabase-js";
+
+interface Scout {
+  full_name: string;
+  rank_level: number;
+  total_points: number;
+}
+
+interface Lead {
+  id: string;
+  business_name: string;
+  property_category: string;
+  status: string;
+}
 
 export default function Dashboard() {
-  const [user, setUser] = useState<any>(null);
-  const [scout, setScout] = useState<any>(null);
-  const [leads, setLeads] = useState<any[]>([]);
+  const [user, setUser] = useState<User | null>(null);
+  const [scout, setScout] = useState<Scout | null>(null);
+  const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = createClient();

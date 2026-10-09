@@ -40,7 +40,7 @@ export default function Home() {
             We have the technology. We need your eyes on the ground.
           </h2>
           <p className="text-lg text-gray-300 leading-relaxed">
-            Every night, billions of dollars of commercial real estate are protected by empty guard booths, passive cameras, and sleeping personnel. You see these security gaps every day on your commute, in your neighborhood, and at your workplace. AITX is rapidly deploying autonomous edge-AI to fix this broken system. But our sales team can't be everywhere at once. By joining the RAD Field Scout Network, you become the decentralized vanguard of our enterprise growth. Help us find the facilities that desperately need ROSA, RIO, and PURSUON, and get rewarded when they upgrade.
+            Every night, billions of dollars of commercial real estate are protected by empty guard booths, passive cameras, and sleeping personnel. You see these security gaps every day on your commute, in your neighborhood, and at your workplace. AITX is rapidly deploying autonomous edge-AI to fix this broken system. But our sales team can&apos;t be everywhere at once. By joining the RAD Field Scout Network, you become the decentralized vanguard of our enterprise growth. Help us find the facilities that desperately need ROSA, RIO, and PURSUON, and get rewarded when they upgrade.
           </p>
         </div>
       </section>
@@ -62,7 +62,7 @@ export default function Home() {
           <div className="flex flex-col items-center text-center">
             <div className="w-16 h-16 rounded-full bg-cyan-950 border border-cyan-500/30 flex items-center justify-center text-cyan-400 font-bold text-2xl mb-6 shadow-[0_0_15px_rgba(6,182,212,0.2)]">3</div>
             <h3 className="text-xl font-bold mb-4">Track & Earn</h3>
-            <p className="text-gray-400">Our US Enterprise Sales team takes it from there. Track your lead's status on your dashboard and unlock exclusive rewards as the lead converts.</p>
+            <p className="text-gray-400">Our US Enterprise Sales team takes it from there. Track your lead&apos;s status on your dashboard and unlock exclusive rewards as the lead converts.</p>
           </div>
         </div>
       </section>
@@ -77,7 +77,7 @@ export default function Home() {
               <div>
                 <h3 className="text-2xl font-bold text-white mb-2">LEVEL 1: Certified Scout</h3>
                 <p className="text-cyan-500 font-medium mb-3">Unlocked after 1 verified submission</p>
-                <p className="text-gray-400">Digital RAD Scout Profile Badge & Access to quarterly "Behind the Build" engineering streams.</p>
+                <p className="text-gray-400">Digital RAD Scout Profile Badge & Access to quarterly &quot;Behind the Build&quot; engineering streams.</p>
               </div>
             </div>
             

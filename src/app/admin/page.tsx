@@ -1,17 +1,34 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { CheckCircle, XCircle, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
+
+interface Scout {
+  full_name: string;
+  email: string;
+}
+
+interface Lead {
+  id: string;
+  photo_url: string;
+  business_name: string;
+  address: string;
+  property_category: string;
+  security_gap: string;
+  notes: string;
+  status: string;
+  scouts?: Scout;
+}
 
 export default function AdminDashboard() {
-  const [leads, setLeads] = useState<any[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const supabase = createClient();
 
-  const fetchLeads = async () => {
+  const fetchLeads = useCallback(async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       router.push("/auth");
@@ -28,13 +45,13 @@ export default function AdminDashboard() {
       `)
       .order("created_at", { ascending: false });
 
-    if (data) setLeads(data);
+    if (data) setLeads(data as Lead[]);
     setLoading(false);
-  };
+  }, [router, supabase]);
 
   useEffect(() => {
     fetchLeads();
-  }, [router, supabase]);
+  }, [fetchLeads]);
 
   const updateLeadStatus = async (id: string, newStatus: string) => {
     const { error } = await supabase

@@ -8,12 +8,15 @@ export const metadata: Metadata = {
   title: 'RAD Field Scout Network',
   description: 'Help AITX disrupt the $50 billion legacy security industry.',
   manifest: '/manifest.json',
-  themeColor: '#000000',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'RAD Scout',
   },
+};
+
+export const viewport = {
+  themeColor: '#000000',
 };
 
 export default function RootLayout({
