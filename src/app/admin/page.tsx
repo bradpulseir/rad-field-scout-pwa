@@ -35,7 +35,17 @@ export default function AdminDashboard() {
       return;
     }
 
-    // In a production app, verify admin role here.
+    // Verify admin role
+    const { data: scout } = await supabase
+      .from("scouts")
+      .select("is_admin")
+      .eq("id", user.id)
+      .single();
+
+    if (!scout || !scout.is_admin) {
+      router.push("/dashboard");
+      return;
+    }
 
     const { data } = await supabase
       .from("leads")

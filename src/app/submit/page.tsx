@@ -3,7 +3,7 @@
 import { useState, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
-import { Camera, MapPin, Loader2, ArrowLeft } from "lucide-react";
+import { Camera, MapPin, Loader2, ArrowLeft, AlertCircle } from "lucide-react";
 import Link from "next/link";
 
 export default function SubmitLead() {
@@ -19,6 +19,8 @@ export default function SubmitLead() {
   const [notes, setNotes] = useState("");
   
   const [locating, setLocating] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [locError, setLocError] = useState<string | null>(null);
 
   const router = useRouter();
   const supabase = createClient();
@@ -29,37 +31,42 @@ export default function SubmitLead() {
       const file = e.target.files[0];
       setPhoto(file);
       setPhotoPreview(URL.createObjectURL(file));
+      setFormError(null);
     }
   };
 
   const getLocation = () => {
     setLocating(true);
+    setLocError(null);
+    
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         async (position) => {
           setLat(position.coords.latitude);
           setLng(position.coords.longitude);
           
-          // Optional: Reverse geocode here using a free API or just store lat/lng
           setAddress(`${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)} (GPS Acquired)`);
           setLocating(false);
         },
         (error) => {
           console.error("Error getting location:", error);
-          alert("Could not get location. Please enter manually.");
+          setLocError("Please enable location services or type the address manually.");
           setLocating(false);
-        }
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
       );
     } else {
-      alert("Geolocation is not supported by your browser.");
+      setLocError("Geolocation is not supported by your browser.");
       setLocating(false);
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError(null);
+
     if (!photo) {
-      alert("Please capture a photo of the security gap.");
+      setFormError("Please capture a photo of the security gap.");
       return;
     }
 
@@ -106,8 +113,8 @@ export default function SubmitLead() {
 
     } catch (error: unknown) {
       console.error("Submission error:", error);
-      const errorMessage = error instanceof Error ? error.message : "Failed to submit lead.";
-      alert(errorMessage);
+      const errorMessage = error instanceof Error ? error.message : "Failed to submit lead. Please try again.";
+      setFormError(errorMessage);
       setLoading(false);
     }
   };
@@ -123,6 +130,13 @@ export default function SubmitLead() {
       </header>
 
       <main className="p-4 max-w-lg mx-auto">
+        {formError && (
+          <div className="mb-6 p-4 bg-red-900/30 border border-red-900 rounded-lg flex items-start gap-3 text-red-400">
+            <AlertCircle size={20} className="shrink-0 mt-0.5" />
+            <p className="text-sm">{formError}</p>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6">
           
           {/* Photo Capture */}
@@ -163,6 +177,9 @@ export default function SubmitLead() {
               {locating ? <Loader2 className="animate-spin" size={18} /> : <MapPin size={18} />}
               {locating ? "Acquiring GPS..." : "📍 Use My Current Location"}
             </button>
+            {locError && (
+              <p className="text-red-400 text-xs mt-1">{locError}</p>
+            )}
             <input 
               type="text" 
               required
