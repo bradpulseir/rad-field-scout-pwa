@@ -1,22 +1,23 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
+import type { Metadata } from "next";
+import { Inter } from "next/font/google";
+import "./globals.css";
+import { BRAND_CONFIG } from "@/config/brandConfig";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'RAD Field Scout Network',
-  description: 'Help AITX disrupt the $50 billion legacy security industry.',
-  manifest: '/manifest.json',
+  title: BRAND_CONFIG.brandTitle,
+  description: "An Official Shareholder & Community Initiative by Artificial Intelligence Technology Solutions, Inc. (OTC: AITX) and Robotic Assistance Devices (RAD).",
+  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
-    statusBarStyle: 'black-translucent',
-    title: 'RAD Scout',
+    statusBarStyle: "black-translucent",
+    title: "AITX Scout",
   },
 };
 
 export const viewport = {
-  themeColor: '#000000',
+  themeColor: "#000000",
 };
 
 export default function RootLayout({

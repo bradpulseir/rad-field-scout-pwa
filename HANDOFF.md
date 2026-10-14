@@ -1,30 +1,50 @@
-# RAD Field Scout Network - Deployment & Handoff Guide
+# AITX ($AITX) | RAD Field Scout Network - Deployment & Handoff Guide
 
-Welcome to the RAD Field Scout Network PWA. This guide provides the exact steps to deploy this application to production with zero downtime.
+Welcome to the **AITX ($AITX) | RAD Field Scout Network** PWA. This platform empowers retail shareholders and brand advocates to crowdsource commercial enterprise leads for AITX (ROSA, RIO, ROAMEO) and spot active units deployed across America.
 
-## 1. GitHub (Version Control)
-1. Go to GitHub and create a new private repository called `rad-field-scout-pwa`.
-2. Push the local code to it:
-   ```bash
-   git remote add origin https://github.com/YOUR_ORG/rad-field-scout-pwa.git
-   git branch -M main
-   git push -u origin main
-   ```
+---
 
-## 2. Supabase (Database)
-1. Go to [Supabase.com](https://supabase.com), create a new project.
-2. Go to the **SQL Editor**.
-3. Copy and paste the text from `supabase/migrations/20231009000000_initial_schema.sql` and run it to instantly build the database.
-4. Copy and paste the text from `supabase/migrations/20231009000001_admin_rls.sql` and run it to enforce triage admin security policies.
-5. In your Supabase dashboard, go to **Storage** and create a new public bucket named `leads`.
+## 1. Centralized Brand Assets (`src/config/brandConfig.ts`)
+All company names, logo fallbacks, reward tiers, baseline numbers for the Community Momentum Thermometer, and social sharing copy presets are centralized in:
+`src/config/brandConfig.ts`
 
-## 3. Vercel (Hosting)
-1. Go to [Vercel.com](https://vercel.com) and click **Add New Project**.
-2. Select your `rad-field-scout-pwa` GitHub repo.
-3. In the "Environment Variables" section, paste your Supabase URL and Anon Key (found in your Supabase project settings -> API):
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-4. Click **Deploy**.
+When official PNG/SVG logos or marketing photography arrive, update the paths in this single file.
 
-## 4. The Magic Link
-In about 60 seconds, Vercel will give you a live URL (e.g., `rad-field-scout-pwa.vercel.app`). Your Progressive Web App is now live and ready to crowdsource enterprise leads!
+---
+
+## 2. Supabase Database Setup & Migrations
+The database schema is fully modularized in `supabase/migrations/`:
+
+1. **`20231009000000_initial_schema.sql`**: Core `scouts` and `leads` tables, status enums, and initial RLS policies.
+2. **`20231009000001_admin_rls.sql`**: Role-based access control for the `/admin` triage dashboard (`is_admin` column and admin RLS).
+3. **`20231009000002_fix_rls_and_gamification.sql`**: 
+   - Strengthened RLS policies preventing "new row violates row-level security policy" errors.
+   - Robust `ON CONFLICT` user trigger.
+   - New `referrals` and `suggestions` tables.
+   - Expanded `leads` table (`submission_type`, `contact_name`, `contact_info`).
+   - Storage upload and public read policies for the `leads` bucket.
+
+### Running Migrations:
+In your Supabase Dashboard, go to **SQL Editor > New query**, paste each file in sequential order, and click **Run**.
+
+### Storage Bucket:
+Go to **Storage > New Bucket**, name it `leads` (all lowercase), and toggle **Public bucket** to **ON**.
+
+---
+
+## 3. CRM & Marketing Webhook Pipeline (`/api/webhooks/sync-crm`)
+The app includes a graceful webhook dispatcher for Mailchimp, Zapier, or HubSpot:
+- Dispatches JSON payloads on signups, lead submissions, friend referrals, and suggestions.
+- Configured via `MAILCHIMP_ZAPIER_WEBHOOK_URL` in `.env`.
+- If unconfigured, the app logs events locally and returns `{ status: "queued_locally" }` without breaking user flow.
+
+---
+
+## 4. Vercel Production Deployment
+1. Import the GitHub repository into your Vercel account.
+2. Add the required Environment Variables:
+   - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase REST API URL
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anon public key
+   - `MAILCHIMP_ZAPIER_WEBHOOK_URL` (optional): Webhook endpoint for CRM sync
+3. Click **Deploy**.
+4. In your Supabase Dashboard under **Authentication > URL Configuration**, set the **Site URL** to your live production domain (e.g. `https://rad-field-scout.vercel.app`).
