@@ -34,14 +34,14 @@ export default function AuthPage() {
         setMessage("Check your email for your 1-click login link!");
         setIsSuccess(true);
 
-        // Notify CRM webhook about signup/login attempt
+        // Notify CRM / Mailchimp API about signup/login attempt with Chimp Tags
         fetch("/api/webhooks/sync-crm", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             email: email.trim(),
             event_type: "signup",
-            tag: "Field_Scout_Lead",
+            tag: "Field_Scout",
             metadata: {
               auth_method: "magic_link",
             },
@@ -74,12 +74,28 @@ export default function AuthPage() {
           </Link>
 
           <div className="text-center mb-8">
+            <div className="flex items-center justify-center gap-4 mb-5 p-3 rounded-2xl bg-black/60 border border-zinc-800">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={BRAND_CONFIG.logos.aitxWhite}
+                alt="AITX"
+                className="h-7 w-auto object-contain"
+              />
+              <span className="text-zinc-700">|</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={BRAND_CONFIG.logos.radIcon}
+                alt="RAD"
+                className="h-6 w-auto object-contain"
+              />
+            </div>
+
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-bold mb-3">
               <Sparkles size={12} className="text-cyan-400" />
-              <span>AITX Shareholder Initiative</span>
+              <span>Official Community Initiative</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black mb-2 text-white">
-              <span className="text-cyan-400">AITX</span> Scout Login
+              Field Scout Login
             </h1>
             <p className="text-gray-400 text-xs sm:text-sm">
               Enter your email to receive a secure 1-click Magic Link. No passwords required.

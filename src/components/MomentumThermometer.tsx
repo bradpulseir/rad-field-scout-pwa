@@ -81,8 +81,8 @@ export default function MomentumThermometer({
       {/* Milestones markers */}
       <div className="flex justify-between text-[10px] sm:text-xs text-gray-400 mt-2 font-mono">
         <span>0</span>
-        <span className="hidden sm:inline">2,500 (Swag Drop)</span>
-        <span>5,000 (Expo Passes)</span>
+        <span className="hidden sm:inline">2,500 (Milestone 1)</span>
+        <span>5,000 (National Reach)</span>
         <span className="hidden sm:inline">7,500 (Wall of Honor)</span>
         <span className="text-cyan-400 font-bold">10,000 (Goal)</span>
       </div>
@@ -91,7 +91,7 @@ export default function MomentumThermometer({
       <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-xs text-gray-400">
         <span className="flex items-center gap-1.5 text-cyan-300/90 font-medium">
           <Sparkles size={14} className="text-cyan-400" />
-          Every scouted location & referral pushes the vanguard forward.
+          Every shared story, referral & scouted location introduces new eyes to AITX & RAD.
         </span>
         <span className="hidden md:inline text-[11px] text-gray-400">
           Updated in real-time

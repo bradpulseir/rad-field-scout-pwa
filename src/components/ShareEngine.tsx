@@ -12,7 +12,8 @@ import {
   CheckCircle2, 
   TrendingUp, 
   ExternalLink,
-  Loader2 
+  Loader2,
+  Globe
 } from "lucide-react";
 
 interface ShareEngineProps {
@@ -89,7 +90,7 @@ export default function ShareEngine({
         }
       }
 
-      // 3. Dispatch to CRM webhook pipeline
+      // 3. Dispatch to CRM / Mailchimp pipeline with Chimp Tags
       fetch("/api/webhooks/sync-crm", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -104,11 +105,10 @@ export default function ShareEngine({
         }),
       }).catch((err) => console.warn("Webhook delivery deferred:", err));
 
-      setInviteSuccess(`+50 Points Earned! Invitation sent to ${friendEmail.trim()}`);
+      setInviteSuccess(`+50 Points Earned! Story invite sent to ${friendEmail.trim()}`);
       setFriendEmail("");
     } catch (err: unknown) {
       console.error("Referral error:", err);
-      // Give positive user feedback even if DB table is syncing
       setInviteSuccess(`+50 Points Queued! Invitation recorded for ${friendEmail.trim()}`);
       setFriendEmail("");
     } finally {
@@ -116,21 +116,22 @@ export default function ShareEngine({
     }
   };
 
-  // 1-Click Social Sharing Links
+  // Story-first social sharing URLs (Introducing new people to AITX.ai & RADSecurity.com)
   const shareText = encodeURIComponent(
-    `I just joined the official $AITX RAD Field Scout Network to help spot commercial deployments for @SteveReinharz and @RADBotSecurity! Join the mission here: ${appUrl} #AITX #EdgeAI #Robotics`
+    `${BRAND_CONFIG.socialShareDefaults.twitterText} ${appUrl} ${BRAND_CONFIG.socialShareDefaults.generalHashtags}`
   );
 
   const stocktwitsText = encodeURIComponent(
-    `$AITX RAD Field Scout Network is live! Shareholders crowdsourcing enterprise edge-AI deployments for ROSA & RIO. Join the vanguard: ${appUrl}`
+    `${BRAND_CONFIG.socialShareDefaults.stocktwitsText} ${appUrl}`
   );
 
   const twitterUrl = `https://twitter.com/intent/tweet?text=${shareText}`;
-  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(appUrl)}`;
+  const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(BRAND_CONFIG.websites.aitxUrl)}`;
   const stocktwitsUrl = `https://stocktwits.com/?status=${stocktwitsText}`;
 
-  const copyAppUrl = () => {
-    navigator.clipboard.writeText(appUrl);
+  const copyStoryBundle = () => {
+    const textToCopy = `${BRAND_CONFIG.socialShareDefaults.twitterText} ${appUrl}`;
+    navigator.clipboard.writeText(textToCopy);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2500);
   };
@@ -150,28 +151,28 @@ export default function ShareEngine({
         </div>
         <div>
           <h3 className="font-extrabold text-lg sm:text-xl text-white flex items-center gap-2">
-            Share & Earn Points
+            Share the AITX Story & Earn Points
             <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-500/40 text-emerald-400">
               +50 PTS PER INVITE
             </span>
           </h3>
           <p className="text-xs text-gray-400">
-            Bring fresh eyes to $AITX. Help expand the decentralized scout team.
+            Introduce new audiences & business owners to AITX and RAD&apos;s autonomous robotics story.
           </p>
         </div>
       </div>
 
-      {/* Part 1: Refer a Friend Input */}
+      {/* Part 1: Refer Someone New Input */}
       <div className="mb-8">
         <label className="block text-xs font-semibold uppercase tracking-wider text-cyan-400 mb-2">
-          Invite a Fellow Shareholder or Colleague
+          Introduce a Friend, Colleague, or Business Owner to AITX
         </label>
         <form onSubmit={handleInviteFriend} className="flex flex-col sm:flex-row gap-2">
           <input
             type="email"
             value={friendEmail}
             onChange={(e) => setFriendEmail(e.target.value)}
-            placeholder="friend.email@example.com"
+            placeholder="colleague.or.friend@example.com"
             className="flex-1 px-4 py-3 bg-black border border-zinc-700 rounded-xl focus:outline-none focus:border-cyan-500 text-white placeholder-gray-500 text-sm"
           />
           <button
@@ -184,7 +185,7 @@ export default function ShareEngine({
             ) : (
               <Send size={16} />
             )}
-            {submittingInvite ? "Sending..." : "Send Invite (+50 Pts)"}
+            {submittingInvite ? "Sending..." : "Send Story Invite (+50 Pts)"}
           </button>
         </form>
 
@@ -202,10 +203,10 @@ export default function ShareEngine({
         )}
       </div>
 
-      {/* Part 2: 1-Click Social Sharing */}
+      {/* Part 2: 1-Click Story Sharing */}
       <div className="mb-8">
         <label className="block text-xs font-semibold uppercase tracking-wider text-gray-400 mb-3">
-          1-Click Social Post & Viral Outlets
+          1-Click Story Share (Drives Traffic to AITX.ai & RADSecurity.com)
         </label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           {/* X / Twitter */}
@@ -216,7 +217,7 @@ export default function ShareEngine({
             className="p-3 bg-zinc-900 border border-zinc-800 hover:border-cyan-500/60 rounded-xl flex items-center justify-center gap-2 text-xs font-bold text-white transition-all hover:bg-zinc-850 group"
           >
             <span className="text-cyan-400 font-mono font-black group-hover:scale-110 transition-transform">𝕏</span>
-            <span>Post to X</span>
+            <span>Share on X</span>
           </a>
 
           {/* StockTwits */}
@@ -238,29 +239,29 @@ export default function ShareEngine({
             className="p-3 bg-zinc-900 border border-zinc-800 hover:border-blue-500/60 rounded-xl flex items-center justify-center gap-2 text-xs font-bold text-white transition-all hover:bg-zinc-850 group"
           >
             <ExternalLink size={14} className="text-blue-400 group-hover:scale-110 transition-transform" />
-            <span>Facebook</span>
+            <span>Share AITX.ai</span>
           </a>
 
-          {/* Copy Link */}
+          {/* Copy Story Post */}
           <button
-            onClick={copyAppUrl}
+            onClick={copyStoryBundle}
             className="p-3 bg-zinc-900 border border-zinc-800 hover:border-cyan-400 rounded-xl flex items-center justify-center gap-2 text-xs font-bold text-cyan-300 transition-all hover:bg-zinc-850"
           >
             {copiedLink ? <Check size={14} className="text-emerald-400" /> : <Copy size={14} />}
-            <span>{copiedLink ? "Copied!" : "Copy Link"}</span>
+            <span>{copiedLink ? "Copied Story!" : "Copy Story"}</span>
           </button>
         </div>
       </div>
 
-      {/* Part 3: Shareable Cards / "RAD in the Wild" */}
+      {/* Part 3: Shareable Story Cards */}
       {!compact && (
         <div>
           <div className="flex items-center justify-between mb-3">
             <label className="text-xs font-semibold uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
               <Sparkles size={14} className="text-cyan-400" />
-              Pre-Loaded Viral Cards (&ldquo;RAD in the Wild&rdquo;)
+              Shareable Story Cards (Introduce New Audiences)
             </label>
-            <span className="text-[11px] text-gray-400">Click card to copy social copy</span>
+            <span className="text-[11px] text-gray-400">Tap card to copy story & links</span>
           </div>
 
           <div className="grid sm:grid-cols-3 gap-3">
@@ -271,12 +272,20 @@ export default function ShareEngine({
                 <div
                   key={card.id}
                   onClick={() => copyCardContent(card)}
-                  className={`cursor-pointer rounded-xl border p-3 bg-zinc-900/60 transition-all hover:border-cyan-500/80 hover:bg-zinc-900 relative flex flex-col justify-between ${
+                  className={`cursor-pointer rounded-xl border p-3.5 bg-zinc-900/60 transition-all hover:border-cyan-500/80 hover:bg-zinc-900 relative flex flex-col justify-between ${
                     isCopied ? "border-emerald-500 ring-1 ring-emerald-500" : "border-zinc-800"
                   }`}
                 >
                   <div>
-                    <div className="flex justify-between items-start mb-2">
+                    <div className="h-16 w-full bg-black/70 rounded-lg border border-zinc-800/80 flex items-center justify-center p-2 mb-3">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img 
+                        src={card.imageUrl} 
+                        alt={card.unit} 
+                        className="max-h-12 w-auto object-contain"
+                      />
+                    </div>
+                    <div className="flex justify-between items-start mb-1.5">
                       <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded bg-cyan-950 text-cyan-300 border border-cyan-800">
                         {card.unit}
                       </span>
@@ -295,12 +304,40 @@ export default function ShareEngine({
                   </div>
 
                   <div className="mt-3 pt-2 border-t border-zinc-800 flex justify-between items-center text-[10px] text-cyan-400 font-medium">
-                    <span>Copy $AITX Post</span>
+                    <span>Copy Story + Website Link</span>
                     <span>→</span>
                   </div>
                 </div>
               );
             })}
+          </div>
+
+          {/* Direct Links to Official Websites */}
+          <div className="mt-4 pt-3 border-t border-zinc-800/60 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-400">
+            <span className="flex items-center gap-1.5">
+              <Globe size={13} className="text-cyan-400" />
+              <span>Official Websites Being Promoted:</span>
+            </span>
+            <div className="flex items-center gap-4">
+              <a
+                href={BRAND_CONFIG.websites.aitxUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1"
+              >
+                <span>AITX.ai</span>
+                <ExternalLink size={11} />
+              </a>
+              <a
+                href={BRAND_CONFIG.websites.radUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-yellow-400 hover:text-yellow-300 font-semibold flex items-center gap-1"
+              >
+                <span>RADSecurity.com</span>
+                <ExternalLink size={11} />
+              </a>
+            </div>
           </div>
         </div>
       )}

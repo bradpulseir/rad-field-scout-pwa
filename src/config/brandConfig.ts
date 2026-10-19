@@ -14,6 +14,7 @@ export interface ShareCard {
   unit: string;
   tagline: string;
   imageUrl: string;
+  learnMoreUrl: string;
   socialCopy: string;
 }
 
@@ -25,17 +26,27 @@ export const BRAND_CONFIG = {
   exchange: "OTC: AITX",
   companyName: "Artificial Intelligence Technology Solutions, Inc.",
   subsidiaryName: "Robotic Assistance Devices (RAD)",
+
+  // Official Websites (For Driving New Audience Traffic)
+  websites: {
+    aitxUrl: "https://aitx.ai",
+    radUrl: "https://radsecurity.com",
+  },
   
   // Banner Headline
   subHeaderBanner:
     "An Official Shareholder & Community Initiative by Artificial Intelligence Technology Solutions, Inc. (OTC: AITX) and its RAD Subsidiaries.",
 
-  // Public Web App URL (Fallback to production or current origin)
+  // Public Web App URL
   appUrl: process.env.NEXT_PUBLIC_APP_URL || "https://rad-field-scout.vercel.app",
 
-  // Logos & Asset Placeholders
+  // Official Logos (Provided by AITX Marketing)
   logos: {
-    // Clean SVG/CSS text-icon fallbacks until official PNG/SVG files are placed in /public
+    aitxWhite: "/logos/aitx-logo-white.png",
+    aitxColor: "/logos/aitx-logo-color.png",
+    radIcon: "/logos/rad-icon.png",
+    radBadgeYellow: "/logos/rad-badge-yellow.png",
+    radFull: "/logos/rad-logo-full.png",
     aitxLogoText: "AITX",
     radLogoText: "RAD",
     logoSubtitle: "FIELD SCOUT NETWORK",
@@ -46,10 +57,10 @@ export const BRAND_CONFIG = {
   momentum: {
     goal: 10000,
     baselineOffset: 782, // Seed number so the community campaign feels active immediately
-    metricLabel: "Community Scout Actions & Referrals",
+    metricLabel: "Community Story Shares, Referrals & Scout Actions",
   },
 
-  // Compliance-Safe Gamification Tiers (Strictly SEC Reg FD Compliant - Non-Equity, Non-Cash Perks)
+  // Digital Recognition & Milestone Tiers (No Hard Swag Commitments Upfront, SEC Reg FD Compliant)
   rewardTiers: [
     {
       level: 1,
@@ -57,11 +68,11 @@ export const BRAND_CONFIG = {
       minPoints: 100,
       badge: "🥉",
       badgeColor: "border-amber-600/50 text-amber-400 bg-amber-950/40",
-      requirement: "100 Points — Sign up & submit 1 location or refer 2 friends",
+      requirement: "100 Points — Share the AITX story, submit 1 location, or refer 2 friends",
       perks: [
         "Official Digital RAD Scout Profile Badge",
         "Public Leaderboard Ranking & Verified Contributor Status",
-        "Access to Quarterly Community Engineering Recaps"
+        "Quarterly Program Impact & Deployment Digest"
       ],
     },
     {
@@ -70,11 +81,11 @@ export const BRAND_CONFIG = {
       minPoints: 500,
       badge: "🥈",
       badgeColor: "border-zinc-400/50 text-zinc-300 bg-zinc-800/40",
-      requirement: "500 Points — Active scouting, verified leads & community sharing",
+      requirement: "500 Points — Active story sharing, referrals & verified field spotting",
       perks: [
-        "Eligible for Official AITX / RAD Swag Pack (Apparel & Gear)",
-        "Priority Invitation to Public Shareholder Livestreams",
-        "Senior Scout Certificate of Recognition"
+        "Senior Scout Digital Recognition & Priority Leaderboard Badge",
+        "Featured Spotlight in Community Updates",
+        "Priority Eligibility for Future Program Milestone Perks"
       ],
     },
     {
@@ -83,52 +94,55 @@ export const BRAND_CONFIG = {
       minPoints: 1500,
       badge: "🥇",
       badgeColor: "border-cyan-400/60 text-cyan-300 bg-cyan-950/50",
-      requirement: "1,500 Points — Top community contributors & viral ambassadors",
+      requirement: "1,500 Points — Top community ambassadors introducing AITX to new audiences",
       perks: [
-        "Featured on the Official AITX Digital Wall of Honor",
-        "Eligible for VIP Guest Passes to Major Public Industry Expos (e.g. ISC West)",
-        "Exclusive Master Vanguard Challenge Coin & Commemorative Plaque"
+        "Permanent Induction onto the Official AITX Digital Wall of Honor",
+        "Top Vanguard Ambassador Distinction",
+        "VIP Consideration for Public Industry Expo Guest Passes (e.g. ISC West)"
       ],
     },
   ] as RewardTier[],
 
-  // Pre-loaded Shareable Cards ("RAD in the Wild" / Social Memes)
+  // Story-First Shareable Cards (Designed to Introduce AITX/RAD to New Audiences & Drive Website Visits)
   shareCards: [
     {
-      id: "rosa-wild",
-      unit: "ROSA",
-      title: "ROSA Edge-AI Autonomous Protector",
-      tagline: "Active deterrence replacing passive surveillance across America.",
-      imageUrl: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
+      id: "rosa-story",
+      unit: "ROSA™",
+      title: "Meet ROSA: AI-Driven Autonomous Security",
+      tagline: "Replacing outdated passive cameras with active, 180° AI deterrence for commercial facilities.",
+      imageUrl: "/logos/rad-badge-yellow.png",
+      learnMoreUrl: "https://radsecurity.com",
       socialCopy:
-        "I just joined the official $AITX RAD Field Scout Network to help spot commercial deployments for @SteveReinharz and @RADBotSecurity! Autonomous security is here. Join the mission: https://rad-field-scout.vercel.app #AITX #EdgeAI #Robotics",
+        "Have you seen how AI robotics is transforming commercial security? Meet ROSA by Robotic Assistance Devices (RAD), an AITX company—autonomous edge-AI deterrence protecting facilities nationwide. See how it works at https://radsecurity.com & https://aitx.ai #AITX #RADSecurity #EdgeAI #Robotics",
     },
     {
-      id: "rio-wild",
-      unit: "RIO 360",
-      title: "RIO Solar-Powered Mobile Tower",
-      tagline: "Total perimeter security for logistics hubs, yards, and parking lots.",
-      imageUrl: "https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80",
+      id: "rio-story",
+      unit: "RIO™ 360",
+      title: "RIO: Solar-Powered Autonomous Perimeter Tower",
+      tagline: "Zero-grid, rapid-deployment AI security for logistics yards, retail centers, and large properties.",
+      imageUrl: "/logos/rad-icon.png",
+      learnMoreUrl: "https://radsecurity.com",
       socialCopy:
-        "Spotting security opportunities in the field for $AITX! Help bring autonomous edge-AI to logistics yards & retail centers with @RADBotSecurity: https://rad-field-scout.vercel.app #AITX #Robotics #OTC",
+        "Businesses are upgrading from passive security cameras to solar-powered autonomous AI towers like RIO by RAD (an AITX company). Zero trenching, 360° active deterrence, and massive cost savings. Explore the technology at https://radsecurity.com and https://aitx.ai #AI #SecurityTech #AITX #Robotics",
     },
     {
-      id: "roameo-wild",
-      unit: "ROAMEO",
-      title: "ROAMEO Autonomous Patrol Vehicle",
-      tagline: "Patrolling large outdoor commercial campuses with AI precision.",
-      imageUrl: "https://images.unsplash.com/photo-1535378620166-273708d44e4c?auto=format&fit=crop&w=800&q=80",
+      id: "aitx-mission",
+      unit: "AITX STORY",
+      title: "The Future of Autonomous Facility Operations",
+      tagline: "Discover how Artificial Intelligence Technology Solutions (AITX) is solving real-world labor & security challenges.",
+      imageUrl: "/logos/aitx-logo-white.png",
+      learnMoreUrl: "https://aitx.ai",
       socialCopy:
-        "Decentralized scouting for $AITX! Shareholders are mapping the next generation of autonomous AI robotics deployments. Join us today: https://rad-field-scout.vercel.app #AITX #StockTwits #Tech",
+        "Discover how Artificial Intelligence Technology Solutions (AITX) and its subsidiary RAD are deploying practical, autonomous AI robots across hospitals, logistics hubs, and commercial properties nationwide. Learn more at https://aitx.ai and join the Field Scout Network: https://rad-field-scout.vercel.app #AITX #Innovation #ArtificialIntelligence",
     },
   ] as ShareCard[],
 
-  // Social Sharing Presets
+  // Social Sharing Presets (Story-First to Introduce New People to AITX.ai & RADSecurity.com)
   socialShareDefaults: {
     twitterText:
-      "I just joined the official $AITX RAD Field Scout Network to help spot commercial deployments for @SteveReinharz and @RADBotSecurity! Join the mission here:",
+      "Autonomous AI is transforming how commercial properties, hospitals, and logistics yards stay secure. Check out what @SteveReinharz and @RADBotSecurity (an $AITX company) are building at https://aitx.ai & https://radsecurity.com — or join our community Scout Network:",
     stocktwitsText:
-      "$AITX RAD Field Scout Network is live! Shareholders crowdsourcing enterprise edge-AI deployments for ROSA & RIO. Join the vanguard:",
-    generalHashtags: "#AITX #RAD #EdgeAI #Robotics #OTC",
+      "Spreading the word on $AITX and @RADBotSecurity! Introducing new businesses & audiences to autonomous AI security solutions (ROSA, RIO, ROAMEO). Explore the tech at https://aitx.ai or join the Field Scout Network:",
+    generalHashtags: "#AITX #RADSecurity #EdgeAI #Robotics #AI",
   },
 };

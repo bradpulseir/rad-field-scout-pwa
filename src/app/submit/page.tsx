@@ -308,13 +308,20 @@ export default function SubmitLead() {
           <Link href="/dashboard" className="text-gray-400 hover:text-white transition-colors">
             <ArrowLeft size={22} />
           </Link>
-          <div>
-            <div className="font-extrabold text-base sm:text-lg flex items-center gap-1.5">
-              <span className="text-cyan-400">AITX</span>
-              <span className="text-gray-400 text-xs">|</span>
-              <span>Field Scout</span>
-            </div>
-            <p className="text-[10px] text-gray-400">Fast 30-second field submission</p>
+          <div className="flex items-center gap-2.5">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={BRAND_CONFIG.logos.aitxWhite}
+              alt="AITX"
+              className="h-5 sm:h-6 w-auto object-contain"
+            />
+            <span className="text-zinc-700">|</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={BRAND_CONFIG.logos.radIcon}
+              alt="RAD"
+              className="h-5 w-auto object-contain"
+            />
           </div>
         </div>
         <Link href="/dashboard" className="text-xs text-gray-400 hover:text-cyan-400">

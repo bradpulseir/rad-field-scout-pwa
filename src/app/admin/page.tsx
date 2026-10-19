@@ -105,12 +105,27 @@ export default function AdminDashboard() {
 
       <header className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 border-b border-zinc-800 pb-6">
         <div>
+          <div className="flex items-center gap-3 mb-3">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={BRAND_CONFIG.logos.aitxWhite}
+              alt="AITX"
+              className="h-7 w-auto object-contain"
+            />
+            <span className="text-zinc-700">|</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={BRAND_CONFIG.logos.radIcon}
+              alt="RAD"
+              className="h-6 w-auto object-contain"
+            />
+          </div>
           <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-cyan-950 text-cyan-400 text-xs font-bold border border-cyan-800/50 mb-2">
             <ShieldCheck size={14} />
             <span>ENTERPRISE SALES TRIAGE</span>
           </div>
           <h1 className="text-3xl font-black text-white">
-            <span className="text-cyan-400">AITX</span> | RAD Admin Triage
+            RAD Admin Triage
           </h1>
           <p className="text-gray-400 text-xs sm:text-sm mt-1">
             Review crowdsourced commercial properties and public RAD spottings.

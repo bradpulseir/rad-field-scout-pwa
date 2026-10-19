@@ -141,12 +141,23 @@ export default function Dashboard() {
 
       {/* Main Header */}
       <header className="bg-zinc-900/90 backdrop-blur-md border-b border-zinc-800 p-4 sticky top-0 z-20 flex justify-between items-center">
-        <div className="flex items-center gap-2">
-          <div className="font-extrabold text-lg tracking-tight">
-            <span className="text-cyan-400">AITX</span>
-            <span className="text-gray-400 text-xs mx-1.5">|</span>
-            <span>RAD Scout</span>
-          </div>
+        <div className="flex items-center gap-3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={BRAND_CONFIG.logos.aitxWhite}
+            alt="AITX"
+            className="h-6 sm:h-7 w-auto object-contain"
+          />
+          <span className="text-zinc-700">|</span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={BRAND_CONFIG.logos.radIcon}
+            alt="RAD"
+            className="h-5 sm:h-6 w-auto object-contain"
+          />
+          <span className="text-xs font-bold uppercase tracking-wider text-gray-300 hidden sm:inline">
+            Field Scout
+          </span>
         </div>
         <button 
           onClick={handleLogout} 

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 
 export interface SyncPayload {
   email: string;
@@ -19,14 +20,67 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const cleanEmail = body.email.trim().toLowerCase();
+    const primaryTag = body.tag || "Field_Scout";
+
     const payload: SyncPayload = {
-      email: body.email,
-      tag: body.tag || "Field_Scout",
+      email: cleanEmail,
+      tag: primaryTag,
       event_type: body.event_type,
       metadata: body.metadata || {},
       timestamp: new Date().toISOString(),
     };
 
+    // 1. NATIVE MAILCHIMP v3 API INTEGRATION (Direct Audience Upsert + Chimp Tags)
+    const mailchimpApiKey = process.env.MAILCHIMP_API_KEY;
+    const mailchimpAudienceId = process.env.MAILCHIMP_AUDIENCE_ID;
+
+    if (mailchimpApiKey && mailchimpAudienceId) {
+      try {
+        // Extract datacenter prefix from API key (e.g. "xxxx-us21" -> "us21")
+        const dc = process.env.MAILCHIMP_SERVER_PREFIX || mailchimpApiKey.split("-")[1];
+        const subscriberHash = crypto.createHash("md5").update(cleanEmail).digest("hex");
+        const baseUrl = `https://${dc}.api.mailchimp.com/3.0/lists/${mailchimpAudienceId}/members/${subscriberHash}`;
+        const authHeader = `Basic ${Buffer.from(`anystring:${mailchimpApiKey}`).toString("base64")}`;
+
+        // Upsert subscriber into existing Mailchimp Audience without disturbing existing status
+        await fetch(baseUrl, {
+          method: "PUT",
+          headers: {
+            Authorization: authHeader,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email_address: cleanEmail,
+            status_if_new: "subscribed",
+          }),
+        });
+
+        // Apply dedicated Mailchimp Tags so AITX Marketing can segment Field Scouts separately
+        await fetch(`${baseUrl}/tags`, {
+          method: "POST",
+          headers: {
+            Authorization: authHeader,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            tags: [
+              { name: "AITX_Field_Scout_Program", status: "active" },
+              { name: primaryTag, status: "active" },
+            ],
+          }),
+        });
+
+        return NextResponse.json(
+          { status: "success", provider: "mailchimp_native", tags_applied: ["AITX_Field_Scout_Program", primaryTag] },
+          { status: 200 }
+        );
+      } catch (mcError) {
+        console.error("[CRM Sync] Mailchimp API error:", mcError);
+      }
+    }
+
+    // 2. OPTIONAL ZAPIER / CUSTOM WEBHOOK FALLBACK
     const webhookUrl = process.env.MAILCHIMP_ZAPIER_WEBHOOK_URL;
 
     if (webhookUrl && webhookUrl.trim() !== "") {
@@ -35,7 +89,7 @@ export async function POST(req: NextRequest) {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "User-Agent": "RAD-Field-Scout-CRM-Sync/2.0",
+            "User-Agent": "RAD-Field-Scout-CRM-Sync/2.1",
           },
           body: JSON.stringify(payload),
         });
@@ -49,12 +103,11 @@ export async function POST(req: NextRequest) {
         }
 
         return NextResponse.json(
-          { status: "success", forwarded: true },
+          { status: "success", provider: "webhook", forwarded: true },
           { status: 200 }
         );
       } catch (networkError) {
         console.error("[CRM Sync] Failed to post to remote webhook:", networkError);
-        // Return 200 graceful fallback so frontend never breaks
         return NextResponse.json(
           { status: "queued_locally", note: "Remote webhook unreachable, queued safely." },
           { status: 200 }
@@ -62,13 +115,13 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Graceful offline/local mode when waiting on client credentials
-    console.log("[CRM Sync - Local Queue] Outbound webhook unconfigured. Payload safely logged:", JSON.stringify(payload, null, 2));
+    // 3. GRACEFUL LOCAL QUEUE MODE (While waiting for client Mailchimp keys)
+    console.log("[CRM Sync - Local Queue] Mailchimp credentials unconfigured. Payload safely logged:", JSON.stringify(payload, null, 2));
 
     return NextResponse.json(
       {
         status: "queued_locally",
-        message: "No webhook URL configured yet. Payload logged gracefully.",
+        message: "Mailchimp API credentials not yet configured. Event logged gracefully.",
         payloadPreview: {
           email: payload.email,
           event_type: payload.event_type,
